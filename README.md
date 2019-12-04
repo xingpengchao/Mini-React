@@ -1,5 +1,5 @@
 # Min-React
-一个简易版React框架，用于说明React的实现原理。
+一个简易版的React框架，用于说明React的实现原理。
 
 # 实现核心功能
 
