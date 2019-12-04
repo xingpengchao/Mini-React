@@ -1,5 +1,8 @@
 import createElement from './create-element.jsx';
 
-export default { 
+const React = {
+	Component,
 	createElement
 }
+
+export default React;

@@ -1,6 +1,7 @@
 // 因为将JSX片段编译并返回JS对象也就是虚拟Dom，需要用到React.createElement()方法，需要导入React
 // React暴露了createElement和Component
 import React from './react';
+
 // 需要用到ReactDOM.render()方法  
 // ReactDOM暴露了唯一的render方法
 import ReactDOM from './react-dom';

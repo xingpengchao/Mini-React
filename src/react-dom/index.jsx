@@ -1,3 +1,6 @@
 import render from './render'
 
-export default { render } 
+const ReactDOM = {
+	render
+}
+export default ReactDOM; 
