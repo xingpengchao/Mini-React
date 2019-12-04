@@ -1,7 +1,7 @@
 # Min-React
-简易版React，用于说明React的实现原理。
+一个简易版React框架，用于说明React的实现原理。
 
-# 实现核心功能：
+# 实现核心功能
 
 实现了JSX，虚拟DOM，组件，生命周期，diff算法，异步的setState等核心功能。
 
