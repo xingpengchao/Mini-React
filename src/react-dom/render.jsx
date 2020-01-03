@@ -3,7 +3,7 @@ import {diff} from './diff.jsx';
 // render方法的作用是将虚拟DOM渲染成真实DOM，并挂载到容器上
 // render方法接收两个参数，第一参数为虚拟DOM，第二个参数为所要挂载的容器
 const render = (vnode, container) => {
-    // 将打补丁后的真实DOM挂载到容器上
+    // 将更新后的DOM挂载到容器上
     let dom = diff(dom, vnode, container);
     return container.appendChild(dom);
 } 

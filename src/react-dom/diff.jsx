@@ -24,11 +24,11 @@ function diffNode( dom, vnode ) {
 
     let out = dom;
 
-    if ( vnode === undefined || vnode === null || typeof vnode === 'boolean' ) vnode = '';
+    if ( vnode == undefined || vnode == null || typeof vnode === 'boolean' ) vnode = '';
 
     if ( typeof vnode === 'number' ) vnode = String( vnode );
 
-    // diff text node
+    // 对比文本节点 
     if ( typeof vnode === 'string' ) {
 
         // 如果当前的DOM就是文本节点，则直接更新内容
@@ -47,11 +47,12 @@ function diffNode( dom, vnode ) {
         return out;
     }
 
+    //  如果虚拟DOM是函数，调用对比组件方法
     if ( typeof vnode.tag === 'function' ) {
         return diffComponent( dom, vnode );
     }
-
-    //
+    // 对比DOM节点
+    // 对比元素节点
     if ( !dom || !isSameNodeType( dom, vnode ) ) {
         out = document.createElement( vnode.tag );
 
@@ -63,11 +64,13 @@ function diffNode( dom, vnode ) {
             }
         }
     }
-
+    
+    // 对比子节点
     if ( vnode.children && vnode.children.length > 0 || ( out.childNodes && out.childNodes.length > 0 ) ) {
         diffChildren( out, vnode.children );
     }
 
+    // 对比属性节点
     diffAttributes( out, vnode );
 
     return out;
@@ -156,11 +159,11 @@ function diffComponent( dom, vnode ) {
     let c = dom && dom._component;
     let oldDom = dom;
 
-    // 如果组件类型没有变化，则重新set props
+    // 如果组件类型没有发生变化，则进行set props操作
     if ( c && c.constructor === vnode.tag ) {
         setComponentProps( c, vnode.attrs );
         dom = c.base;
-    // 如果组件类型变化，则移除掉原来组件，并渲染新的组件
+    // 如果组件类型发生变化，则移除原来组件，并渲染新的组件
     } else {
 
         if ( c ) {
@@ -184,6 +187,7 @@ function diffComponent( dom, vnode ) {
 
 }
 
+// set props方法
 function setComponentProps( component, props ) {
 
     if ( !component.base ) {
@@ -198,6 +202,7 @@ function setComponentProps( component, props ) {
 
 }
 
+// 导出渲染组件方法，供异步的setState中清空队列时，渲染组件使用
 export function renderComponent( component ) {
 
     let base;
@@ -221,6 +226,7 @@ export function renderComponent( component ) {
 
 }
 
+// 创建新组件
 function createComponent( component, props ) {
 
     let inst;
@@ -228,7 +234,7 @@ function createComponent( component, props ) {
     if ( component.prototype && component.prototype.render ) {
         inst = new component( props );
     } else {
-        inst = new Component( props );
+        inst = new component( props );
         inst.constructor = component;
         inst.render = function() {
             return this.constructor( props );
@@ -239,11 +245,13 @@ function createComponent( component, props ) {
 
 }
 
+// 移除旧组件
 function unmountComponent( component ) {
     if ( component.componentWillUnmount ) component.componentWillUnmount();
     removeNode( component.base);
 }
 
+// 判断节点类型是否相同
 function isSameNodeType( dom, vnode ) {
     if ( typeof vnode === 'string' || typeof vnode === 'number' ) {
         return dom.nodeType === 3;
@@ -256,6 +264,7 @@ function isSameNodeType( dom, vnode ) {
     return dom && dom._component && dom._component.constructor === vnode.tag;
 }
 
+// 对比属性节点 
 function diffAttributes( dom, vnode ) {
 
     const old = {};    // 当前DOM的属性
@@ -281,11 +290,11 @@ function diffAttributes( dom, vnode ) {
         if ( old[ name ] !== attrs[ name ] ) {
             setAttribute( dom, name, attrs[ name ] );
         }
-
     }
 
 }
 
+// 移除dom节点
 function removeNode( dom ) {
 
     if ( dom && dom.parentNode ) {
