@@ -7,7 +7,8 @@
 
 # 运行
 
-1. git clone https://github.com/XPC2659489932/Mini-React.git
+1. git clone https://github.com/xingpengchao/Mini-React.git
 2. npm install
 3. cd Mini-React
 4. npm start
+5. 浏览器打开localhost:1234

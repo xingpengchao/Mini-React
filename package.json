@@ -9,18 +9,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/XPC2659489932/Mini-React.git"
+    "url": "git+https://github.com/xingpengchao/Mini-React.git"
   },
   "author": "Xingpc",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/XPC2659489932/Mini-React/issues"
+    "url": "https://github.com/xingpengchao/Mini-React/issues"
   },
-  "homepage": "https://github.com/XPC2659489932/Mini-React#readme",
+  "homepage": "https://github.com/xingpengchao/Mini-React#readme",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "parcel-bundler": "^1.12.4"
+  },
+  "dependencies": {
+    "npm": "^6.13.4"
   }
 }
