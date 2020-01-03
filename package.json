@@ -1,7 +1,7 @@
 {
-  "name": "min-react",
+  "name": "mini-react",
   "version": "1.0.0",
-  "description": "min-react",
+  "description": "mini-react",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/XPC2659489932/Min-React.git"
+    "url": "git+https://github.com/XPC2659489932/Mini-React.git"
   },
   "author": "Xingpc",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/XPC2659489932/Min-React/issues"
+    "url": "https://github.com/XPC2659489932/Mini-React/issues"
   },
-  "homepage": "https://github.com/XPC2659489932/Min-React#readme",
+  "homepage": "https://github.com/XPC2659489932/Mini-React#readme",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-plugin-transform-react-jsx": "^6.24.1",

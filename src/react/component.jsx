@@ -3,7 +3,7 @@ import { enqueueSetState } from './set-state-queue.jsx';
 // 定义组件基类
 class Component{
 	constructor(props ={}){
-		// 用判断是否为类组件
+		// 用于判断是否为类组件
 		this.isReactComponent = true;
 		// 初始化props和state
 		this.props = props;

@@ -7,7 +7,7 @@
 
 # 运行
 
-1. git clone https://github.com/XPC2659489932/Min-React.git
+1. git clone https://github.com/XPC2659489932/Mini-React.git
 2. npm install
-3. cd Min-React
+3. cd Mini-React
 4. npm start

@@ -1,10 +1,11 @@
-import setAttribute from './dom.jsx';
+import {diff} from './diff.jsx';
 
 // render方法的作用是将虚拟DOM渲染成真实DOM
 // render方法接收两个参数，第一参数为虚拟DOM，第二个参数为所要挂载的的真实目标DOM
 const render = (vnode, container) => {
     // 将渲染结果挂载到真正的DOM上
-    return container.appendChild(_render(dom))
+    let dom = diff(dom, vnode, container);
+    return container.appendChild(dom);
 } 
 
 const _render = ( vnode, container ) => {
@@ -62,8 +63,8 @@ const _render = ( vnode, container ) => {
         vnode.children.forEach( child => render( child, dom ) );   
     }
     
-    // 返回真正的DOM
-    return dom;    
+    // 将映射的DOM挂载到真实DOM上
+    return container.appendChild(dom);    
 }
 
 

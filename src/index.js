@@ -14,8 +14,8 @@ class App extends React.Component{
 	}
 }
 
-// render方法接收两个参数，第一个参数为虚拟DOM，第二个为所要挂载的真实目标DOM
-// render方法的作用就是将虚拟DOM渲染成真实的DOM
+//  render方法接收两个参数，第一个参数为虚拟DOM，第二个参数是所要挂载的容器
+//  render方法的作用就是将虚拟DOM渲染成真实的DOM
 ReactDOM.render(
 	<App/>,
 	document.getElementById('root')
