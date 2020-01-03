@@ -7,13 +7,16 @@ createElement方法接收三个参数：
 第三个参数是一个数组，使用扩展运算符将child1、child2一些列子节点合并成的一个数组children；*/
 
 function createElement( tag, attrs, ...children ) {
+
+	attrs = attrs || {};
     // 返回一个JS对象，就是虚拟Dom
     return {
         tag,
         attrs,
-        children
+        children,
+        key: attrs.key || null 
     }
 }
 
-// 导出createElement接口
+
 export default createElement;

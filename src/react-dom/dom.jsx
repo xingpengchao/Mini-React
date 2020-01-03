@@ -1,5 +1,5 @@
-// setAttribute方法设置属性集合的属性
-// setAttribute方法接收三个参数，分别是虚拟DOM对应的真实DOM的标签、该标签的属性名、属性值
+// setAttribute方法用于设置属性集合的属性
+// setAttribute方法接收三个参数，分别是虚拟DOM对应的真实DOM元素标签、该标签的属性名、属性值
 const setAttribute = ( dom, name, value ) => {
     // 如果属性名是className，则改回class
     if ( name === 'className' ) name = 'class';
@@ -35,5 +35,5 @@ const setAttribute = ( dom, name, value ) => {
     }
 }
 
-//导出setAttribute方法接口
+
 export default setAttribute;

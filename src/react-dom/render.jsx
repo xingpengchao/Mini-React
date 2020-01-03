@@ -68,5 +68,4 @@ const _render = ( vnode, container ) => {
 }
 
 
-// 导出render方法接口
 export default render;

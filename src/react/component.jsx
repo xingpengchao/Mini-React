@@ -10,11 +10,11 @@ class Component{
 		this.state = {};
 	}
     
-     // 定义原型方法setState，用于改变状态
+     // 定义原型方法setState，用于改变状态state
+     // stateChange可以是对象，也可以是函数 
 	setState(stateChange){
 		enqueueSetState(stateChange, this);
 	}
 }
 
- // 导出组件基类/父类Component接口 
 export default Component;
