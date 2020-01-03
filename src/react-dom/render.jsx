@@ -1,15 +1,15 @@
 import {diff} from './diff.jsx';
 
-// render方法的作用是将虚拟DOM渲染成真实DOM
-// render方法接收两个参数，第一参数为虚拟DOM，第二个参数为所要挂载的的真实目标DOM
+// render方法的作用是将虚拟DOM渲染成真实DOM，并挂载到容器上
+// render方法接收两个参数，第一参数为虚拟DOM，第二个参数为所要挂载的容器
 const render = (vnode, container) => {
-    // 将渲染结果挂载到真正的DOM上
+    // 将打补丁后的真实DOM挂载到容器上
     let dom = diff(dom, vnode, container);
     return container.appendChild(dom);
 } 
 
 const _render = ( vnode, container ) => {
-    // 当虚拟DOM未定义，终止函数
+    // 当虚拟DOM为空，终止函数
     if ( vnode === undefined ) return;
     
     // 当虚拟DOM是组件
@@ -60,10 +60,10 @@ const _render = ( vnode, container ) => {
     
     // 递归渲染子节点
     if(vnode.children){
-        vnode.children.forEach( child => render( child, dom ) );   
+        vnode.children.forEach( child => _render( child, dom ) );   
     }
     
-    // 将映射的DOM挂载到真实DOM上
+    // 将真实DOM挂载到容器上
     return container.appendChild(dom);    
 }
 

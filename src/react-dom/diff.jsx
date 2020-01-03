@@ -1,4 +1,4 @@
-import { Componet } from '../react'
+import { Component } from '../react'
 import { setAttribute } from './dom'
 
 /**
