@@ -4,7 +4,7 @@ const setStateQueue = [];  // 存储setState的队列
 const renderQueue = [];  // 渲染组件队列
 
 // 异步清空队列，使用JS事件循环机制实现，具体使用Promise.resolve().then()包裹清空队列的方法，生成微任务，
-// 执行步骤是同步任务执行完成后执行微任务，达到异步清空队列的方法，这是实现异步setState的关键  
+// 执行步骤是同步任务执行完成后执行微任务，达到异步清空队列的效果，这是实现异步setState的关键  
 function defer( fn ) {
     return Promise.resolve().then( fn );
 }
