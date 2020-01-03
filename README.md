@@ -1,4 +1,4 @@
-# Min-React
+# Mini-React
 一个简易版的React框架，用于说明React的实现原理。
 
 # 实现核心功能
@@ -12,3 +12,7 @@
 3. cd Mini-React
 4. npm start
 5. 浏览器打开localhost:1234
+
+# 测试图 
+
+
