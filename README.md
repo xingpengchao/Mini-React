@@ -3,7 +3,7 @@
 
 # 实现核心功能
 
-实现了JSX，虚拟DOM，组件，生命周期，diff算法，异步的setState等核心功能。
+实现了React的JSX，虚拟DOM，组件，生命周期，diff算法，异步的setState等核心功能。
 
 # 运行
 
