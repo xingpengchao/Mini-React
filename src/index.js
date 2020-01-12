@@ -1,5 +1,5 @@
 // 关于为什么要导入React? 
-// 1. 因为要继承React父类
+// 1. 因为要继承React.Component父类
 // 2. 因为编译JSX片段并返回JS对象（虚拟Dom），需要用到React.createElement()方法，需要导入React
 // React暴露了createElement和Component
 import React from './react';
