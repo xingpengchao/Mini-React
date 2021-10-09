@@ -1,5 +1,5 @@
-import { Component } from '../react'
-import { setAttribute } from './dom'
+import { Component } from "../react";
+import { setAttribute } from "./dom";
 
 /**
  * @param {HTMLElement} dom 真实DOM
@@ -8,297 +8,267 @@ import { setAttribute } from './dom'
  * @returns {HTMLElement} 更新后的DOM
  */
 
-export function diff( dom, vnode, container ) {
+export function diff(dom, vnode, container) {
+  const ret = diffNode(dom, vnode);
 
-    const ret = diffNode( dom, vnode );
+  if (container && ret.parentNode !== container) {
+    container.appendChild(ret);
+  }
 
-    if ( container && ret.parentNode !== container ) {
-        container.appendChild( ret );
-    }
-
-    return ret;
-
+  return ret;
 }
 
-function diffNode( dom, vnode ) {
+function diffNode(dom, vnode) {
+  let out = dom;
 
-    let out = dom;
+  if (vnode == undefined || vnode == null || typeof vnode === "boolean")
+    vnode = "";
 
-    if ( vnode == undefined || vnode == null || typeof vnode === 'boolean' ) vnode = '';
+  if (typeof vnode === "number") vnode = String(vnode);
 
-    if ( typeof vnode === 'number' ) vnode = String( vnode );
-
-    // 对比文本节点 
-    if ( typeof vnode === 'string' ) {
-
-        // 如果当前的DOM就是文本节点，则直接更新内容
-        if ( dom && dom.nodeType === 3 ) {    // nodeType: https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeType
-            if ( dom.textContent !== vnode ) {
-                dom.textContent = vnode;
-            }
-        // 如果DOM不是文本节点，则新建一个文本节点DOM，并移除掉原来的
-        } else {
-            out = document.createTextNode( vnode );
-            if ( dom && dom.parentNode ) {
-                dom.parentNode.replaceChild( out, dom );
-            }
-        }
-
-        return out;
+  // 对比文本节点
+  if (typeof vnode === "string") {
+    // 如果当前的DOM就是文本节点，则直接更新内容
+    if (dom && dom.nodeType === 3) {
+      // nodeType: https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeType
+      if (dom.textContent !== vnode) {
+        dom.textContent = vnode;
+      }
+      // 如果DOM不是文本节点，则新建一个文本节点DOM，并移除掉原来的
+    } else {
+      out = document.createTextNode(vnode);
+      if (dom && dom.parentNode) {
+        dom.parentNode.replaceChild(out, dom);
+      }
     }
-
-    //  如果虚拟DOM是函数，调用对比组件方法
-    if ( typeof vnode.tag === 'function' ) {
-        return diffComponent( dom, vnode );
-    }
-    // 对比DOM节点
-    // 对比元素节点
-    if ( !dom || !isSameNodeType( dom, vnode ) ) {
-        out = document.createElement( vnode.tag );
-
-        if ( dom ) {
-            [ ...dom.childNodes ].map( out.appendChild );    // 将原来的子节点移到新节点下
-
-            if ( dom.parentNode ) {
-                dom.parentNode.replaceChild( out, dom );    // 移除掉原来的DOM对象
-            }
-        }
-    }
-    
-    // 对比子节点
-    if ( vnode.children && vnode.children.length > 0 || ( out.childNodes && out.childNodes.length > 0 ) ) {
-        diffChildren( out, vnode.children );
-    }
-
-    // 对比属性节点
-    diffAttributes( out, vnode );
 
     return out;
+  }
 
+  //  如果虚拟DOM是函数，调用对比组件方法
+  if (typeof vnode.tag === "function") {
+    return diffComponent(dom, vnode);
+  }
+  // 对比DOM节点
+  // 对比元素节点
+  if (!dom || !isSameNodeType(dom, vnode)) {
+    out = document.createElement(vnode.tag);
+
+    if (dom) {
+      [...dom.childNodes].map(out.appendChild); // 将原来的子节点移到新节点下
+
+      if (dom.parentNode) {
+        dom.parentNode.replaceChild(out, dom); // 移除掉原来的DOM对象
+      }
+    }
+  }
+
+  // 对比子节点
+  if (
+    (vnode.children && vnode.children.length > 0) ||
+    (out.childNodes && out.childNodes.length > 0)
+  ) {
+    diffChildren(out, vnode.children);
+  }
+
+  // 对比属性节点
+  diffAttributes(out, vnode);
+
+  return out;
 }
 
-function diffChildren( dom, vchildren ) {
+function diffChildren(dom, vchildren) {
+  const domChildren = dom.childNodes;
+  const children = [];
 
-    const domChildren = dom.childNodes;
-    const children = [];
+  const keyed = {};
 
-    const keyed = {};
-
-    if ( domChildren.length > 0 ) {
-        for ( let i = 0; i < domChildren.length; i++ ) {
-            const child = domChildren[ i ];
-            const key = child.key;
-            if ( key ) {
-                keyedLen++;
-                keyed[ key ] = child;
-            } else {
-                children.push( child );
-            }
-        }
+  if (domChildren.length > 0) {
+    for (let i = 0; i < domChildren.length; i++) {
+      const child = domChildren[i];
+      const key = child.key;
+      if (key) {
+        keyedLen++;
+        keyed[key] = child;
+      } else {
+        children.push(child);
+      }
     }
+  }
 
-    if ( vchildren && vchildren.length > 0 ) {
+  if (vchildren && vchildren.length > 0) {
+    let min = 0;
+    let childrenLen = children.length;
 
-        let min = 0;
-        let childrenLen = children.length;
+    for (let i = 0; i < vchildren.length; i++) {
+      const vchild = vchildren[i];
+      const key = vchild.key;
+      let child;
 
-        for ( let i = 0; i < vchildren.length; i++ ) {
-
-            const vchild = vchildren[ i ];
-            const key = vchild.key;
-            let child;
-
-            if ( key ) {
-
-                if ( keyed[ key ] ) {
-                    child = keyed[ key ];
-                    keyed[ key ] = undefined;
-                }
-
-            } else if ( min < childrenLen ) {
-
-                for ( let j = min; j < childrenLen; j++ ) {
-
-                    let c = children[ j ];
-
-                    if ( c && isSameNodeType( c, vchild ) ) {
-
-                        child = c;
-                        children[ j ] = undefined;
-
-                        if ( j === childrenLen - 1 ) childrenLen--;
-                        if ( j === min ) min++;
-                        break;
-
-                    }
-
-                }
-
-            }
-
-            child = diffNode( child, vchild );
-
-            const f = domChildren[ i ];
-            if ( child && child !== dom && child !== f ) {
-                if ( !f ) {
-                    dom.appendChild(child);
-                } else if ( child === f.nextSibling ) {
-                    removeNode( f );
-                } else {
-                    dom.insertBefore( child, f );
-                }
-            }
-
+      if (key) {
+        if (keyed[key]) {
+          child = keyed[key];
+          keyed[key] = undefined;
         }
-    }
+      } else if (min < childrenLen) {
+        for (let j = min; j < childrenLen; j++) {
+          let c = children[j];
 
+          if (c && isSameNodeType(c, vchild)) {
+            child = c;
+            children[j] = undefined;
+
+            if (j === childrenLen - 1) childrenLen--;
+            if (j === min) min++;
+            break;
+          }
+        }
+      }
+
+      child = diffNode(child, vchild);
+
+      const f = domChildren[i];
+      if (child && child !== dom && child !== f) {
+        if (!f) {
+          dom.appendChild(child);
+        } else if (child === f.nextSibling) {
+          removeNode(f);
+        } else {
+          dom.insertBefore(child, f);
+        }
+      }
+    }
+  }
 }
 
-function diffComponent( dom, vnode ) {
+function diffComponent(dom, vnode) {
+  let c = dom && dom._component;
+  let oldDom = dom;
 
-    let c = dom && dom._component;
-    let oldDom = dom;
-
-    // 如果组件类型没有发生变化，则进行set props操作
-    if ( c && c.constructor === vnode.tag ) {
-        setComponentProps( c, vnode.attrs );
-        dom = c.base;
+  // 如果组件类型没有发生变化，则进行set props操作
+  if (c && c.constructor === vnode.tag) {
+    setComponentProps(c, vnode.attrs);
+    dom = c.base;
     // 如果组件类型发生变化，则移除原来组件，并渲染新的组件
-    } else {
-
-        if ( c ) {
-            unmountComponent( c );
-            oldDom = null;
-        }
-
-        c = createComponent( vnode.tag, vnode.attrs );
-
-        setComponentProps( c, vnode.attrs );
-        dom = c.base;
-
-        if ( oldDom && dom !== oldDom ) {
-            oldDom._component = null;
-            removeNode( oldDom );
-        }
-
+  } else {
+    if (c) {
+      unmountComponent(c);
+      oldDom = null;
     }
 
-    return dom;
+    c = createComponent(vnode.tag, vnode.attrs);
 
+    setComponentProps(c, vnode.attrs);
+    dom = c.base;
+
+    if (oldDom && dom !== oldDom) {
+      oldDom._component = null;
+      removeNode(oldDom);
+    }
+  }
+
+  return dom;
 }
 
 // set props方法
-function setComponentProps( component, props ) {
+function setComponentProps(component, props) {
+  if (!component.base) {
+    if (component.componentWillMount) component.componentWillMount();
+  } else if (component.componentWillReceiveProps) {
+    component.componentWillReceiveProps(props);
+  }
 
-    if ( !component.base ) {
-        if ( component.componentWillMount ) component.componentWillMount();
-    } else if ( component.componentWillReceiveProps ) {
-        component.componentWillReceiveProps( props );
-    }
+  component.props = props;
 
-    component.props = props;
-
-    renderComponent( component );
-
+  renderComponent(component);
 }
 
 // 导出渲染组件方法，供异步的setState中清空队列时，渲染组件使用
-export function renderComponent( component ) {
+export function renderComponent(component) {
+  let base;
 
-    let base;
+  const renderer = component.render();
 
-    const renderer = component.render();
+  if (component.base && component.componentWillUpdate) {
+    component.componentWillUpdate();
+  }
 
-    if ( component.base && component.componentWillUpdate ) {
-        component.componentWillUpdate();
-    }
+  base = diffNode(component.base, renderer);
 
-    base = diffNode( component.base, renderer );
+  if (component.base) {
+    if (component.componentDidUpdate) component.componentDidUpdate();
+  } else if (component.componentDidMount) {
+    component.componentDidMount();
+  }
 
-    if ( component.base ) {
-        if ( component.componentDidUpdate ) component.componentDidUpdate();
-    } else if ( component.componentDidMount ) {
-        component.componentDidMount();
-    }
-
-    component.base = base;
-    base._component = component;
-
+  component.base = base;
+  base._component = component;
 }
 
 // 创建新组件
-function createComponent( component, props ) {
+function createComponent(component, props) {
+  let inst;
 
-    let inst;
+  if (component.prototype && component.prototype.render) {
+    inst = new component(props);
+  } else {
+    inst = new component(props);
+    inst.constructor = component;
+    inst.render = function () {
+      return this.constructor(props);
+    };
+  }
 
-    if ( component.prototype && component.prototype.render ) {
-        inst = new component( props );
-    } else {
-        inst = new component( props );
-        inst.constructor = component;
-        inst.render = function() {
-            return this.constructor( props );
-        }
-    }
-
-    return inst;
-
+  return inst;
 }
 
 // 移除旧组件
-function unmountComponent( component ) {
-    if ( component.componentWillUnmount ) component.componentWillUnmount();
-    removeNode( component.base);
+function unmountComponent(component) {
+  if (component.componentWillUnmount) component.componentWillUnmount();
+  removeNode(component.base);
 }
 
 // 判断节点类型是否相同
-function isSameNodeType( dom, vnode ) {
-    if ( typeof vnode === 'string' || typeof vnode === 'number' ) {
-        return dom.nodeType === 3;
-    }
+function isSameNodeType(dom, vnode) {
+  if (typeof vnode === "string" || typeof vnode === "number") {
+    return dom.nodeType === 3;
+  }
 
-    if ( typeof vnode.tag === 'string' ) {
-        return dom.nodeName.toLowerCase() === vnode.tag.toLowerCase();
-    }
+  if (typeof vnode.tag === "string") {
+    return dom.nodeName.toLowerCase() === vnode.tag.toLowerCase();
+  }
 
-    return dom && dom._component && dom._component.constructor === vnode.tag;
+  return dom && dom._component && dom._component.constructor === vnode.tag;
 }
 
-// 对比属性节点 
-function diffAttributes( dom, vnode ) {
+// 对比属性节点
+function diffAttributes(dom, vnode) {
+  const old = {}; // 当前DOM的属性
+  const attrs = vnode.attrs; // 虚拟DOM的属性
 
-    const old = {};    // 当前DOM的属性
-    const attrs = vnode.attrs;     // 虚拟DOM的属性
+  for (let i = 0; i < dom.attributes.length; i++) {
+    const attr = dom.attributes[i];
+    old[attr.name] = attr.value;
+  }
 
-    for ( let i = 0 ; i < dom.attributes.length; i++ ) {
-        const attr = dom.attributes[ i ];
-        old[ attr.name ] = attr.value;
+  // 如果原来的属性不在新的属性当中，则将其移除掉（属性值设为undefined）
+  for (let name in old) {
+    if (!(name in attrs)) {
+      setAttribute(dom, name, undefined);
     }
+  }
 
-    // 如果原来的属性不在新的属性当中，则将其移除掉（属性值设为undefined）
-    for ( let name in old ) {
-
-        if ( !( name in attrs ) ) {
-            setAttribute( dom, name, undefined );
-        }
-
+  // 更新新的属性值
+  for (let name in attrs) {
+    if (old[name] !== attrs[name]) {
+      setAttribute(dom, name, attrs[name]);
     }
-
-    // 更新新的属性值
-    for ( let name in attrs ) {
-
-        if ( old[ name ] !== attrs[ name ] ) {
-            setAttribute( dom, name, attrs[ name ] );
-        }
-    }
-
+  }
 }
 
 // 移除dom节点
-function removeNode( dom ) {
-
-    if ( dom && dom.parentNode ) {
-        dom.parentNode.removeChild( dom );
-    }
-
+function removeNode(dom) {
+  if (dom && dom.parentNode) {
+    dom.parentNode.removeChild(dom);
+  }
 }
